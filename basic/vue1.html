@@ -1,0 +1,57 @@
+<!doctype html>
+<html>
+<head>
+	<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</head>	
+
+<body>
+<div id="app">
+	<div v-for='entry in cases'>
+	 	<div>{{entry.subject}}</div>
+	 	<div id="components-demo">
+  <button-counter v-bind:title="entry.subject"></button-counter>
+</div>
+	 	<div><img v-bind:src="entry.imgUrl"></div>
+	 </div>
+</div>
+
+<script>
+var app = new Vue({
+        el: '#app',
+        data: {
+            cases: [],
+            renderPage: false
+        },
+        
+        created() {
+          this.getCases()
+        },
+         methods: {
+          getCases() {
+            var vm = this;
+            axios.get('/opusneo/neowcms/neowcmsDev.nsf/getData?openAgent&scope=listItems&scopeId=socialfeed&scopeIdType=listId&includeRating=true&includeComments=true&customFields=category,contactPerson')
+              .then(function (res) {
+                vm.cases = res.data.res.entries;
+                vm.renderPage = true;
+              })
+              .catch(function (err) {
+                console.log(err)
+              })
+          }
+        }
+    });
+   
+
+Vue.component('button-counter', {
+ props: ['title'],	
+	  
+  template: '<div class="buttonCon"><button>Title is {{title}}.</button></div>'
+})
+
+</script>
+
+</body>	
+	
+</html>
+
